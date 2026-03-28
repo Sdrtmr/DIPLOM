@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Документ: {{ document.title }}</h1>
+    {% if current_user and current_user.role in ['admin', 'manager'] %}
+        <a href="{{ url_for('edit_document', doc_id=document.id) }}" class="btn btn-warning" style="float: right; margin-top: -2.5rem;">Редактировать</a>
+    {% endif %}
+
+    <p><strong>Источник:</strong> {{ document.source_system or 'локальный' }} (ID: {{ document.external_id or '—' }})</p>
+    <div class="document-content" style="background: #f9f9f9; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+        <strong>Содержимое:</strong>
+        <div style="margin-top: 0.5rem;">
+            {{ document.content|safe }}
+        </div>
+    </div>
+    <p><strong>Создан:</strong> {{ document.created_at }}</p>
+    <p><strong>Обновлён:</strong> {{ document.updated_at or '—' }}</p>
+</div>
+
+<div class="card">
+    <h2>Связанные документы</h2>
+    {% if related %}
+        <ul style="list-style: none; padding-left: 0;">
+        {% for item in related %}
+            <li style="margin-bottom: 0.5rem;">
+                <a href="{{ url_for('document_view', doc_id=item.doc.id) }}" class="btn btn-primary">{{ item.doc.title }}</a>
+                <span style="color: #7f8c8d;">(связь: {{ item.relation_type }}, {{ item.direction }})</span>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет связанных документов.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Процесс согласования</h2>
+    {% if workflow %}
+        <p><strong>Текущий статус:</strong> 
+            <span class="badge {% if workflow.status == 'active' %}badge-active{% elif workflow.status == 'rejected' %}badge-rejected{% elif workflow.status == 'completed' %}badge-completed{% else %}badge-pending{% endif %}">{{ workflow.status }}</span>
+        </p>
+        <p><strong>Шаблон:</strong> {{ workflow.template_name }}</p>
+        <p><strong>Текущий шаг:</strong> {{ workflow.current_step + 1 }} из {{ workflow.steps_detail|length }} ({{ workflow.steps_detail[workflow.current_step].name }})</p>
+
+        <h3>Задачи</h3>
+        <table>
+            <thead>
+                <tr><th>Шаг</th><th>Название</th><th>Роль</th><th>Статус</th><th>Комментарий</th></tr>
+            </thead>
+            <tbody>
+            {% for task in workflow.tasks %}
+                {% set step_info = workflow.steps_detail[task.step_index] %}
+                <tr>
+                    <td>{{ task.step_index + 1 }}</td>
+                    <td>{{ step_info.name }}</td>
+                    <td>{{ task.assigned_role }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>{{ task.comments or '' }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if workflow.status == 'active' and current_user and current_user.role in ['admin', 'manager'] %}
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <form action="{{ url_for('complete_process', process_id=workflow.id) }}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Завершить процесс согласования? Документ будет считаться согласованным.')">Завершить процесс</button>
+                </form>
+                <form action="{{ url_for('reject_process', process_id=workflow.id) }}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Отклонить процесс? Документ будет отклонён.')">Отклонить процесс</button>
+                </form>
+            </div>
+        {% endif %}
+    {% else %}
+        <p>Для этого документа ещё нет процесса согласования.</p>
+        {% if current_user and current_user.role in ['admin', 'manager'] %}
+            <form action="{{ url_for('start_workflow', doc_id=document.id) }}" method="post" style="box-shadow: none; padding: 0; margin: 0;">
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <select name="template_id" id="template_id" style="width: auto; flex-grow: 1;">
+                        {% for tmpl in all_templates %}
+                            <option value="{{ tmpl.id }}">{{ tmpl.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-success">Запустить процесс</button>
+                </div>
+            </form>
+        {% else %}
+            <p><em>Только менеджер или администратор могут запускать процесс.</em></p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

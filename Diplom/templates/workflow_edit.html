@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 800px;">
+    <h1>{% if template %}Редактирование{% else %}Создание{% endif %} шаблона</h1>
+
+    <form method="post" id="workflowForm" style="box-shadow: none; padding: 0;">
+        <div>
+            <label for="name">Название:</label>
+            <input type="text" id="name" name="name" value="{{ template.name if template else '' }}" required>
+        </div>
+        <div>
+            <label for="description">Описание:</label>
+            <textarea id="description" name="description" rows="3">{{ template.description if template else '' }}</textarea>
+        </div>
+        <div>
+            <label>Шаги процесса:</label>
+            <div id="steps-container">
+                {% if template and template.steps %}
+                    {% for step in template.steps %}
+                        <div class="step-item" style="margin-bottom: 1rem; border: 1px solid #ccc; padding: 0.5rem; border-radius: 4px;">
+                            <input type="text" name="step_name_{{ loop.index0 }}" value="{{ step.name }}" placeholder="Название шага" style="width: 100%; margin-bottom: 0.5rem;">
+                            <input type="text" name="step_role_{{ loop.index0 }}" value="{{ step.role }}" placeholder="Роль (manager, lawyer, admin)" style="width: 100%; margin-bottom: 0.5rem;">
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <div>
+                                    <label>Срок (часы):</label>
+                                    <input type="number" name="step_deadline_{{ loop.index0 }}" value="{{ step.deadline_hours if step.deadline_hours is not none else '' }}" style="width: 80px;">
+                                </div>
+                                <div>
+                                    <label>Можно вернуть:</label>
+                                    <input type="checkbox" name="step_can_return_{{ loop.index0 }}" {% if step.can_return %}checked{% endif %}>
+                                </div>
+                                <button type="button" onclick="removeStep(this)" class="btn btn-danger" style="margin-left: auto;">Удалить</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="step-item" style="margin-bottom: 1rem; border: 1px solid #ccc; padding: 0.5rem; border-radius: 4px;">
+                        <input type="text" name="step_name_0" placeholder="Название шага" style="width: 100%; margin-bottom: 0.5rem;">
+                        <input type="text" name="step_role_0" placeholder="Роль (manager, lawyer, admin)" style="width: 100%; margin-bottom: 0.5rem;">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <div>
+                                <label>Срок (часы):</label>
+                                <input type="number" name="step_deadline_0" style="width: 80px;">
+                            </div>
+                            <div>
+                                <label>Можно вернуть:</label>
+                                <input type="checkbox" name="step_can_return_0">
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <button type="button" onclick="addStep()" class="btn btn-secondary">+ Добавить шаг</button>
+        </div>
+        <button type="submit" class="btn btn-success">Сохранить</button>
+        <a href="{{ url_for('workflows_list') }}" class="btn btn-danger">Отмена</a>
+    </form>
+</div>
+
+<!-- Блок запуска процесса на основе шаблона (только для существующего шаблона) -->
+{% if template %}
+<div class="card" style="margin-top: 2rem;">
+    <h2>Запустить процесс на основе шаблона</h2>
+    <form action="{{ url_for('start_workflow_from_template', template_id=template.id) }}" method="post" style="box-shadow: none; padding: 0;">
+        <div>
+            <label for="document_id">Выберите документ:</label>
+            <select name="document_id" id="document_id" required style="width: 100%;">
+                <option value="">-- выберите документ --</option>
+                {% for doc in documents %}
+                    <option value="{{ doc.id }}">{{ doc.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary" onclick="return confirm('Запустить процесс согласования для выбранного документа?')">Запустить процесс</button>
+        </div>
+    </form>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h2>Управление активными процессами</h2>
+    <p>Действия применяются ко всем активным процессам, созданным по этому шаблону.</p>
+    <div style="display: flex; gap: 1rem;">
+        <form action="{{ url_for('complete_all_workflows', template_id=template.id) }}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-success" onclick="return confirm('Завершить все активные процессы по этому шаблону?')">Завершить все активные процессы</button>
+        </form>
+        <form action="{{ url_for('reject_all_workflows', template_id=template.id) }}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Отклонить все активные процессы по этому шаблону?')">Отклонить все активные процессы</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    function addStep() {
+        const container = document.getElementById('steps-container');
+        const stepItems = document.querySelectorAll('.step-item');
+        let maxIdx = -1;
+        stepItems.forEach(item => {
+            const inputs = item.querySelectorAll('input[name^="step_name_"]');
+            inputs.forEach(input => {
+                const name = input.name;
+                const match = name.match(/step_name_(\d+)/);
+                if (match) {
+                    const idx = parseInt(match[1], 10);
+                    if (idx > maxIdx) maxIdx = idx;
+                }
+            });
+        });
+        const newIdx = maxIdx + 1;
+        const newStep = document.createElement('div');
+        newStep.className = 'step-item';
+        newStep.style = 'margin-bottom: 1rem; border: 1px solid #ccc; padding: 0.5rem; border-radius: 4px;';
+        newStep.innerHTML = `
+            <input type="text" name="step_name_${newIdx}" placeholder="Название шага" style="width: 100%; margin-bottom: 0.5rem;">
+            <input type="text" name="step_role_${newIdx}" placeholder="Роль (manager, lawyer, admin)" style="width: 100%; margin-bottom: 0.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div>
+                    <label>Срок (часы):</label>
+                    <input type="number" name="step_deadline_${newIdx}" style="width: 80px;">
+                </div>
+                <div>
+                    <label>Можно вернуть:</label>
+                    <input type="checkbox" name="step_can_return_${newIdx}">
+                </div>
+                <button type="button" onclick="removeStep(this)" class="btn btn-danger" style="margin-left: auto;">Удалить</button>
+            </div>
+        `;
+        container.appendChild(newStep);
+    }
+
+    function removeStep(btn) {
+        btn.closest('.step-item').remove();
+    }
+</script>
+{% endblock %}

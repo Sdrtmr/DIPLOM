@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Задача на согласование</h1>
+
+    <p><strong>Документ:</strong> <a href="{{ url_for('document_view', doc_id=document.id) }}" class="btn btn-primary">{{ document.title }}</a></p>
+    <p><strong>Шаблон:</strong> {{ workflow.template_name }}</p>
+    <p><strong>Шаг:</strong> {{ task.step_index + 1 }} из {{ steps_detail|length }} ({{ steps_detail[task.step_index].name }})</p>
+    <p><strong>Роль исполнителя:</strong> {{ task.assigned_role }}</p>
+    {% if task.deadline %}
+        <p><strong>Срок выполнения:</strong> {{ task.deadline[:19] }}</p>
+    {% endif %}
+    <p><strong>Статус:</strong> 
+        <span class="badge {% if task.status == 'pending' %}badge-pending{% elif task.status == 'approved' %}badge-active{% else %}badge-rejected{% endif %}">
+            {{ task.status }}
+        </span>
+    </p>
+
+    {% if task.status == 'pending' %}
+        <form method="post" style="box-shadow: none; padding: 0;">
+            <div>
+                <label for="comments">Комментарий:</label>
+                <textarea name="comments" id="comments" rows="4" placeholder="Ваш комментарий..."></textarea>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" name="action" value="approve" class="btn btn-success">Утвердить</button>
+                {% if task.can_return %}
+                    <button type="submit" name="action" value="return" class="btn btn-warning" onclick="return confirm('Вернуть задачу на доработку?')">Вернуть на доработку</button>
+                {% endif %}
+                <button type="submit" name="action" value="reject" class="btn btn-danger">Отклонить</button>
+            </div>
+        </form>
+    {% else %}
+        <p><strong>Комментарий:</strong> {{ task.comments or 'нет' }}</p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Вернуться к дашборду</a>
+    {% endif %}
+</div>
+{% endblock %}

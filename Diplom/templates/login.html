@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 2rem auto;">
+    <h1 style="border-bottom: none; text-align: center;">Вход в систему</h1>
+
+    <form method="post" style="box-shadow: none; padding: 0; margin: 0;">
+        <div>
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Войти</button>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+        <strong>Тестовые учётные записи:</strong><br>
+        alex_admin / SecurePass123 (admin)<br>
+        maria_manager / ManagerPass456 (manager)<br>
+        ivan_developer / DevPass789 (developer)<br>
+        elena_lawyer / LawyerPass000 (lawyer)
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Резервное копирование</h1>
+
+<div class="card">
+    <form method="post" style="box-shadow: none; padding: 0; display: inline;">
+        <input type="hidden" name="action" value="create">
+        <button type="submit" class="btn btn-success">Создать резервную копию</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Существующие копии</h2>
+    {% if backups %}
+        <ul style="list-style: none; padding-left: 0;">
+        {% for backup in backups %}
+            <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;">
+                <span>{{ backup }}</span>
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="action" value="restore">
+                    <input type="hidden" name="backup_file" value="{{ backup }}">
+                    <button type="submit" class="btn btn-warning" onclick="return confirm('Восстановить БД из этой копии? Это приведёт к потере всех изменений после даты копии.')">Восстановить</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет резервных копий.</p>
+    {% endif %}
+</div>
+{% endblock %}

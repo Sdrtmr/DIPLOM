@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="widgets">
+    {% for widget in widgets %}
+        <div class="widget">
+            <h3>{{ widget.title }}</h3>
+            <div class="widget-content">
+                {% if widget.type == 'document_list' %}
+                    <ul style="list-style: none; padding-left: 0;">
+                    {% for doc in widget.data %}
+                        <li style="margin-bottom: 0.5rem;">
+                            <a href="{{ url_for('document_view', doc_id=doc.id) }}" class="btn btn-primary">{{ doc.title }}</a>
+                            <span style="color: #7f8c8d;">({{ doc.source_system or 'локальный' }})</span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+
+                {% elif widget.type == 'task_list' %}
+                    <ul style="list-style: none; padding-left: 0;">
+                    {% for task in widget.data %}
+                        <li style="margin-bottom: 0.5rem;">
+                            <a href="{{ url_for('approval_task_view', task_id=task.id) }}" class="btn btn-warning">{{ task.doc_title }} (шаг {{ task.step_index + 1 }})</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+
+                {% elif widget.type == 'stats' %}
+                    <p><strong>Активных процессов:</strong> {{ widget.data.active_workflows }}</p>
+                    <p><strong>Ожидающих задач:</strong> {{ widget.data.pending_tasks }}</p>
+
+                {% elif widget.type == 'workflow_list' %}
+                    <ul style="list-style: none; padding-left: 0;">
+                    {% for wf in widget.data %}
+                        <li style="margin-bottom: 0.5rem;">
+                            <a href="{{ url_for('document_view', doc_id=wf.document_id) }}" class="btn btn-info" style="background: #17a2b8;">{{ wf.doc_title }}</a>
+                            <span style="color: #7f8c8d;">(статус: {{ wf.status }})</span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+
+                {% elif widget.type == 'relation_list' %}
+                    <ul style="list-style: none; padding-left: 0;">
+                    {% for rel in widget.data %}
+                        <li style="margin-bottom: 0.5rem; border-bottom: 1px dashed #ccc; padding-bottom: 0.3rem;">
+                            {{ rel.from_title }} → {{ rel.to_title }} <span style="color: #3498db;">({{ rel.relation_type }})</span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

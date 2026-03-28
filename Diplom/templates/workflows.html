@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Шаблоны процессов согласования</h1>
+
+{% if current_user and current_user.role in ['admin', 'manager'] %}
+    <a href="{{ url_for('workflow_edit') }}" class="btn btn-success" style="margin-bottom: 1.5rem;">+ Создать новый шаблон</a>
+{% endif %}
+
+<div class="widgets" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+    {% for tmpl in templates %}
+        <div class="widget">
+            <h3>{{ tmpl.name }}</h3>
+            <p>{{ tmpl.description }}</p>
+            <p><strong>Шаги:</strong> {{ tmpl.steps | join(' → ') }}</p>
+            {% if current_user and current_user.role in ['admin', 'manager'] %}
+                <a href="{{ url_for('workflow_edit_id', template_id=tmpl.id) }}" class="btn btn-primary">Редактировать</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

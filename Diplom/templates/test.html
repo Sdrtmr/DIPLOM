@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Тестирование системы безопасности</h1>
+
+<div class="card">
+    <form method="post">
+        <button type="submit" class="btn btn-primary">Запустить тесты</button>
+    </form>
+
+    {% if test_output %}
+        <h2>Результаты:</h2>
+        <pre style="background: #2c3e50; color: #ecf0f1; padding: 1rem; border-radius: 4px;">{{ test_output }}</pre>
+    {% endif %}
+</div>
+{% endblock %}

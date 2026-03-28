@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 900px; margin: 2rem auto;">
+    <h1>Редактирование документа: {{ document.title }}</h1>
+
+    <form method="post" id="editForm" style="box-shadow: none; padding: 0;">
+        <input type="hidden" name="content" id="contentHidden">
+
+        <!-- Панель инструментов -->
+        <div id="editor-toolbar" style="margin-bottom: 10px; padding: 8px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
+            <!-- Форматирование текста -->
+            <button type="button" onclick="format('bold')" class="btn btn-secondary" title="Жирный"><i class="fas fa-bold"></i></button>
+            <button type="button" onclick="format('italic')" class="btn btn-secondary" title="Курсив"><i class="fas fa-italic"></i></button>
+            <button type="button" onclick="format('underline')" class="btn btn-secondary" title="Подчёркнутый"><i class="fas fa-underline"></i></button>
+            <button type="button" onclick="format('strikeThrough')" class="btn btn-secondary" title="Зачёркнутый"><i class="fas fa-strikethrough"></i></button>
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+
+            <!-- Списки -->
+            <button type="button" onclick="format('insertUnorderedList')" class="btn btn-secondary" title="Маркированный список"><i class="fas fa-list-ul"></i></button>
+            <button type="button" onclick="format('insertOrderedList')" class="btn btn-secondary" title="Нумерованный список"><i class="fas fa-list-ol"></i></button>
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+
+            <!-- Выравнивание -->
+            <button type="button" onclick="format('justifyLeft')" class="btn btn-secondary" title="Выровнять влево"><i class="fas fa-align-left"></i></button>
+            <button type="button" onclick="format('justifyCenter')" class="btn btn-secondary" title="Выровнять по центру"><i class="fas fa-align-center"></i></button>
+            <button type="button" onclick="format('justifyRight')" class="btn btn-secondary" title="Выровнять вправо"><i class="fas fa-align-right"></i></button>
+            <button type="button" onclick="format('justifyFull')" class="btn btn-secondary" title="Выровнять по ширине"><i class="fas fa-align-justify"></i></button>
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+
+            <!-- Отступы -->
+            <button type="button" onclick="format('indent')" class="btn btn-secondary" title="Увеличить отступ"><i class="fas fa-indent"></i></button>
+            <button type="button" onclick="format('outdent')" class="btn btn-secondary" title="Уменьшить отступ"><i class="fas fa-outdent"></i></button>
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+
+            <!-- Шрифт, размер, цвет -->
+            <select id="fontSelect" onchange="format('fontName', this.value)" style="width: 110px;">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+
+            <select id="fontSizeSelect" onchange="format('fontSize', this.value)" style="width: 70px;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+            </select>
+
+            <input type="color" id="textColor" onchange="format('foreColor', this.value)" title="Цвет текста">
+            <input type="color" id="bgColor" onchange="format('backColor', this.value)" title="Цвет фона">
+
+            <!-- Ссылки -->
+            <button type="button" onclick="createLink()" class="btn btn-secondary" title="Вставить ссылку"><i class="fas fa-link"></i></button>
+            <button type="button" onclick="format('unlink')" class="btn btn-secondary" title="Удалить ссылку"><i class="fas fa-unlink"></i></button>
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+
+            <!-- Очистка форматирования -->
+            <button type="button" onclick="clearFormat()" class="btn btn-secondary" title="Очистить формат"><i class="fas fa-eraser"></i></button>
+        </div>
+
+        <!-- Редактируемая область -->
+        <div id="editor" contenteditable="true"
+             style="border: 1px solid #ccc; padding: 10px; min-height: 400px; overflow-y: auto; background: white; font-family: Arial; font-size: 14px;">
+            {{ document.content|safe }}
+        </div>
+
+        <div style="margin-top: 1rem;">
+            <button type="submit" class="btn btn-success" onclick="prepareSubmit()"><i class="fas fa-save"></i> Сохранить изменения</button>
+            <a href="{{ url_for('document_view', doc_id=document.id) }}" class="btn btn-danger"><i class="fas fa-times"></i> Отмена</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function format(command, value = null) {
+        if (value) {
+            document.execCommand(command, false, value);
+        } else {
+            document.execCommand(command, false, null);
+        }
+        document.getElementById('editor').focus();
+    }
+
+    function clearFormat() {
+        document.execCommand('removeFormat', false, null);
+        document.getElementById('editor').focus();
+    }
+
+    function createLink() {
+        let url = prompt('Введите URL ссылки:', 'https://');
+        if (url) {
+            document.execCommand('createLink', false, url);
+        }
+        document.getElementById('editor').focus();
+    }
+
+    function prepareSubmit() {
+        var editor = document.getElementById('editor');
+        var hidden = document.getElementById('contentHidden');
+        hidden.value = editor.innerHTML;
+        return true;
+    }
+
+    // Обработка Enter (создание нового абзаца)
+    document.getElementById('editor').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            document.execCommand('insertParagraph', false, null);
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

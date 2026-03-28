@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Журнал аудита</h1>
+
+<div style="overflow-x: auto;">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Таблица</th>
+                <th>Операция</th>
+                <th>Старые данные</th>
+                <th>Новые данные</th>
+                <th>Пользователь</th>
+                <th>Время</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.log_id }}</td>
+                <td>{{ log.table_name }}</td>
+                <td>{{ log.operation }}</td>
+                <td><pre>{{ log.old_data or '' }}</pre></td>
+                <td><pre>{{ log.new_data or '' }}</pre></td>
+                <td>{{ log.changed_by }}</td>
+                <td>{{ log.changed_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
