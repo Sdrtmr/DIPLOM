@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card" style="max-width: 900px; margin: 2rem auto;">
+<div class="card" style="max-width: 1000px; margin: 2rem auto;">
     <h1>Редактирование документа: {{ document.title }}</h1>
 
     <form method="post" id="editForm" style="box-shadow: none; padding: 0;">
@@ -14,6 +14,18 @@
             <button type="button" onclick="format('italic')" class="btn btn-secondary" title="Курсив"><i class="fas fa-italic"></i></button>
             <button type="button" onclick="format('underline')" class="btn btn-secondary" title="Подчёркнутый"><i class="fas fa-underline"></i></button>
             <button type="button" onclick="format('strikeThrough')" class="btn btn-secondary" title="Зачёркнутый"><i class="fas fa-strikethrough"></i></button>
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+
+            <!-- Заголовки (выпадающий список) -->
+            <select id="headingSelect" onchange="applyHeading(this.value)" style="width: 100px;">
+                <option value="">Обычный</option>
+                <option value="H1">Заголовок 1</option>
+                <option value="H2">Заголовок 2</option>
+                <option value="H3">Заголовок 3</option>
+                <option value="H4">Заголовок 4</option>
+                <option value="H5">Заголовок 5</option>
+                <option value="H6">Заголовок 6</option>
+            </select>
             <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
 
             <!-- Списки -->
@@ -41,7 +53,6 @@
                 <option value="Georgia">Georgia</option>
                 <option value="Verdana">Verdana</option>
             </select>
-
             <select id="fontSizeSelect" onchange="format('fontSize', this.value)" style="width: 70px;">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -51,17 +62,31 @@
                 <option value="6">6</option>
                 <option value="7">7</option>
             </select>
-
             <input type="color" id="textColor" onchange="format('foreColor', this.value)" title="Цвет текста">
             <input type="color" id="bgColor" onchange="format('backColor', this.value)" title="Цвет фона">
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+
+            <!-- Вставка элементов -->
+            <button type="button" onclick="insertImage()" class="btn btn-secondary" title="Вставить изображение"><i class="fas fa-image"></i></button>
+            <button type="button" onclick="insertTable()" class="btn btn-secondary" title="Вставить таблицу"><i class="fas fa-table"></i></button>
+            <button type="button" onclick="insertBlockquote()" class="btn btn-secondary" title="Цитата"><i class="fas fa-quote-right"></i></button>
+            <button type="button" onclick="insertHorizontalRule()" class="btn btn-secondary" title="Горизонтальная линия"><i class="fas fa-minus"></i></button>
+            <button type="button" onclick="insertSpecialChar()" class="btn btn-secondary" title="Специальный символ"><i class="fas fa-smile"></i></button>
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
 
             <!-- Ссылки -->
             <button type="button" onclick="createLink()" class="btn btn-secondary" title="Вставить ссылку"><i class="fas fa-link"></i></button>
             <button type="button" onclick="format('unlink')" class="btn btn-secondary" title="Удалить ссылку"><i class="fas fa-unlink"></i></button>
             <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
 
-            <!-- Очистка форматирования -->
+            <!-- Отмена/Повтор -->
+            <button type="button" onclick="format('undo')" class="btn btn-secondary" title="Отменить"><i class="fas fa-undo-alt"></i></button>
+            <button type="button" onclick="format('redo')" class="btn btn-secondary" title="Повторить"><i class="fas fa-redo-alt"></i></button>
+            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+
+            <!-- Очистка форматирования и HTML-код -->
             <button type="button" onclick="clearFormat()" class="btn btn-secondary" title="Очистить формат"><i class="fas fa-eraser"></i></button>
+            <button type="button" onclick="toggleSource()" class="btn btn-secondary" title="Показать/скрыть HTML-код"><i class="fas fa-code"></i></button>
         </div>
 
         <!-- Редактируемая область -->
@@ -100,16 +125,101 @@
         document.getElementById('editor').focus();
     }
 
+    function applyHeading(level) {
+        if (level) {
+            document.execCommand('formatBlock', false, level);
+        } else {
+            document.execCommand('formatBlock', false, '<p>');
+        }
+        document.getElementById('editor').focus();
+    }
+
+    function insertImage() {
+        let url = prompt('Введите URL изображения:', 'https://');
+        if (url) {
+            document.execCommand('insertImage', false, url);
+        }
+        document.getElementById('editor').focus();
+    }
+
+    function insertTable() {
+        let rows = prompt('Количество строк:', '3');
+        let cols = prompt('Количество столбцов:', '3');
+        if (rows && cols) {
+            let tableHtml = '<table border="1" cellpadding="5" cellspacing="0">';
+            for (let i = 0; i < rows; i++) {
+                tableHtml += '<tr>';
+                for (let j = 0; j < cols; j++) {
+                    tableHtml += '<td>&nbsp;</td>';
+                }
+                tableHtml += '</tr>';
+            }
+            tableHtml += '</table><br>';
+            document.execCommand('insertHTML', false, tableHtml);
+        }
+        document.getElementById('editor').focus();
+    }
+
+    function insertBlockquote() {
+        document.execCommand('formatBlock', false, 'blockquote');
+        document.getElementById('editor').focus();
+    }
+
+    function insertHorizontalRule() {
+        document.execCommand('insertHorizontalRule', false, null);
+        document.getElementById('editor').focus();
+    }
+
+    function insertSpecialChar() {
+        let char = prompt('Введите символ (например, ©, ®, ™, €, →, ←, ↑, ↓, ♥, ★):', '©');
+        if (char) {
+            document.execCommand('insertText', false, char);
+        }
+        document.getElementById('editor').focus();
+    }
+
+    let sourceMode = false;
+    let originalContent = '';
+    function toggleSource() {
+        const editor = document.getElementById('editor');
+        if (!sourceMode) {
+            originalContent = editor.innerHTML;
+            const textarea = document.createElement('textarea');
+            textarea.id = 'sourceEditor';
+            textarea.style.width = '100%';
+            textarea.style.height = '400px';
+            textarea.style.fontFamily = 'monospace';
+            textarea.value = originalContent;
+            editor.parentNode.replaceChild(textarea, editor);
+            sourceMode = true;
+        } else {
+            const textarea = document.getElementById('sourceEditor');
+            const newHtml = textarea.value;
+            const newDiv = document.createElement('div');
+            newDiv.id = 'editor';
+            newDiv.contentEditable = 'true';
+            newDiv.style = 'border: 1px solid #ccc; padding: 10px; min-height: 400px; overflow-y: auto; background: white; font-family: Arial; font-size: 14px;';
+            newDiv.innerHTML = newHtml;
+            textarea.parentNode.replaceChild(newDiv, textarea);
+            sourceMode = false;
+        }
+    }
+
     function prepareSubmit() {
-        var editor = document.getElementById('editor');
-        var hidden = document.getElementById('contentHidden');
-        hidden.value = editor.innerHTML;
+        let editor = document.getElementById('editor');
+        let hidden = document.getElementById('contentHidden');
+        if (sourceMode) {
+            let textarea = document.getElementById('sourceEditor');
+            hidden.value = textarea.value;
+        } else {
+            hidden.value = editor.innerHTML;
+        }
         return true;
     }
 
     // Обработка Enter (создание нового абзаца)
-    document.getElementById('editor').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
+    document.addEventListener('keydown', function(e) {
+        if (e.target.id === 'editor' && e.key === 'Enter') {
             document.execCommand('insertParagraph', false, null);
             e.preventDefault();
         }

@@ -63,7 +63,6 @@
 <div class="card" style="margin-top: 2rem;">
     <h2>Запустить процесс на основе шаблона</h2>
 
-    <!-- Способ 1: выбрать существующий документ -->
     <form action="{{ url_for('start_workflow_from_template', template_id=template.id) }}" method="post" style="box-shadow: none; padding: 0; margin-bottom: 1.5rem;">
         <div>
             <label for="document_id">Выберите существующий документ:</label>
@@ -79,7 +78,6 @@
         </div>
     </form>
 
-    <!-- Способ 2: загрузить новый файл -->
     <form action="{{ url_for('start_workflow_with_upload', template_id=template.id) }}" method="post" enctype="multipart/form-data" style="box-shadow: none; padding: 0;">
         <div>
             <label for="file">Или загрузите новый файл (.txt или .docx):</label>
