@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Чат</h1>
+<p>Выберите пользователя для начала общения:</p>
+
+<div class="widgets" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+    {% for user in users %}
+        <div class="widget">
+            <h3>{{ user.full_name or user.username }} <span style="font-size: 0.8rem;">({{ user.role }})</span></h3>
+            {% if user.id in last_messages %}
+                <p style="font-size: 0.9rem; color: #7f8c8d;">
+                    {% if last_messages[user.id].file_name %}
+                        <i class="fas fa-file"></i> {{ last_messages[user.id].file_name }}
+                    {% else %}
+                        {{ last_messages[user.id].message_text|truncate(30) }}
+                    {% endif %}
+                    <br><small>{{ last_messages[user.id].timestamp[:19] }}</small>
+                </p>
+            {% else %}
+                <p style="color: #bdc3c7;">Нет сообщений</p>
+            {% endif %}
+            <a href="{{ url_for('chat_with_user', user_id=user.id) }}" class="btn btn-primary">Открыть чат</a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

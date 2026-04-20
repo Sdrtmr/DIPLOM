@@ -333,3 +333,108 @@ hr {
     background: #bdc3c7;
     margin: 1rem 0;
 }
+
+/* ---------- Чат ---------- */
+.chat-container {
+    max-width: 900px;
+    margin: 1rem auto;
+}
+
+.chat-messages {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    height: 400px;
+    overflow-y: auto;
+    background: #fafafa;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.message {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.message.outgoing {
+    align-items: flex-end;
+}
+
+.message.incoming {
+    align-items: flex-start;
+}
+
+.message-bubble {
+    max-width: 70%;
+    padding: 0.5rem 1rem;
+    border-radius: 18px;
+}
+
+.outgoing .message-bubble {
+    background: #3498db;
+    color: white;
+}
+
+.incoming .message-bubble {
+    background: #ecf0f1;
+    color: #2c3e50;
+}
+
+.message-bubble strong {
+    font-weight: 600;
+}
+
+.message-bubble small {
+    opacity: 0.7;
+    margin-left: 0.5rem;
+}
+
+.message-bubble .file-attachment {
+    margin-top: 0.5rem;
+}
+
+.message-bubble .file-attachment a {
+    text-decoration: underline;
+}
+
+.outgoing .message-bubble .file-attachment a {
+    color: white;
+}
+
+.incoming .message-bubble .file-attachment a {
+    color: #3498db;
+}
+
+.chat-form {
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chat-form-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.chat-form-row textarea {
+    width: 100%;
+    resize: vertical;
+}
+
+.chat-form-row .btn-file-label {
+    margin: 0;
+}
+
+.chat-form-row .btn-file-label i {
+    pointer-events: none;
+}
+
+.chat-form-row input[type="file"] {
+    display: none;
+}
+
+.empty-chat-message {
+    text-align: center;
+    color: #95a5a6;
+}

@@ -12,6 +12,12 @@
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <a href="{{ url_for('dashboard') }}" class="btn btn-secondary"><i class="fas fa-tachometer-alt"></i> Главная</a>
             <a href="{{ url_for('workflows_list') }}" class="btn btn-secondary"><i class="fas fa-project-diagram"></i> Шаблоны</a>
+            <a href="{{ url_for('chat_list') }}" class="btn btn-secondary">
+                <i class="fas fa-comments"></i> Чат
+                {% if unread_messages > 0 %}
+                    <span style="background: #e74c3c; color: white; border-radius: 50%; padding: 0.1rem 0.4rem; font-size: 0.8rem; margin-left: 5px;">{{ unread_messages }}</span>
+                {% endif %}
+            </a>
             <a href="{{ url_for('audit_view') }}" class="btn btn-secondary"><i class="fas fa-history"></i> Аудит</a>
             <a href="{{ url_for('backup_page') }}" class="btn btn-secondary"><i class="fas fa-database"></i> Бэкап</a>
             <a href="{{ url_for('policy') }}" class="btn btn-secondary"><i class="fas fa-shield-alt"></i> Политика</a>

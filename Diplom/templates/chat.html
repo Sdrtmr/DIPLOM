@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card chat-container">
+    <h1>Чат с {{ other_user.full_name or other_user.username }} ({{ other_user.role }})</h1>
+
+    <div id="chat-messages" class="chat-messages">
+        {% for msg in messages %}
+            <div class="message {% if msg.sender_id == session['user_id'] %}outgoing{% else %}incoming{% endif %}">
+                <div class="message-bubble">
+                    <strong>
+                        {% if msg.sender_id == session['user_id'] %}Вы{% else %}{{ other_user.full_name or other_user.username }}{% endif %}
+                    </strong>
+                    <small>{{ msg.timestamp[:19] }}</small><br>
+                    {% if msg.message_text %}
+                        {{ msg.message_text }}
+                    {% endif %}
+                    {% if msg.file_name %}
+                        <div class="file-attachment">
+                            <i class="fas fa-paperclip"></i>
+                            <a href="{{ url_for('download_chat_file', message_id=msg.id) }}">
+                                {{ msg.file_name }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <p class="empty-chat-message">Нет сообщений. Начните общение!</p>
+        {% endfor %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="chat-form">
+        <div class="chat-form-row">
+            <div style="flex-grow: 1;">
+                <textarea name="message" rows="2" placeholder="Введите сообщение..."></textarea>
+            </div>
+            <div>
+                <label for="file" class="btn btn-secondary btn-file-label">
+                    <i class="fas fa-paperclip"></i>
+                </label>
+                <input type="file" name="file" id="file">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i> Отправить
+            </button>
+        </div>
+        <small>Можно прикрепить файл (изображение, документ и т.д.)</small>
+    </form>
+</div>
+
+<script>
+    (function() {
+        // Прокрутка вниз при загрузке
+        const chatDiv = document.getElementById('chat-messages');
+        if (chatDiv) {
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+
+        // Отображение имени выбранного файла на кнопке
+        const fileInput = document.getElementById('file');
+        const fileLabel = document.querySelector('label[for="file"]');
+        if (fileInput && fileLabel) {
+            fileInput.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                if (fileName) {
+                    fileLabel.innerHTML = '<i class="fas fa-paperclip"></i> ' + fileName;
+                } else {
+                    fileLabel.innerHTML = '<i class="fas fa-paperclip"></i>';
+                }
+            });
+        }
+    })();
+</script>
+{% endblock %}
