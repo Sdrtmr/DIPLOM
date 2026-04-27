@@ -1,5 +1,63 @@
-/* Подключение шрифта Roboto */
+/* === ОСНОВНЫЕ НАСТРОЙКИ === */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+    --bg-primary: #f0f4f8;
+    --bg-secondary: #ffffff;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --text-muted: #a0aec0;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --nav-bg-start: #2b6cb0;
+    --nav-bg-end: #2c5282;
+    --btn-primary-bg: #3182ce;
+    --btn-primary-hover: #2b6cb0;
+    --btn-success-bg: #38a169;
+    --btn-success-hover: #2f855a;
+    --btn-danger-bg: #e53e3e;
+    --btn-danger-hover: #c53030;
+    --btn-warning-bg: #dd6b20;
+    --btn-warning-hover: #c05621;
+    --btn-secondary-bg: #718096;
+    --btn-secondary-hover: #4a5568;
+    --card-bg: #ffffff;
+    --chat-outgoing-bg: #3182ce;
+    --chat-incoming-bg: #e2e8f0;
+    --editor-toolbar-bg: #f7fafc;
+    --table-header-bg: #3182ce;
+    --table-stripe: #f7fafc;
+}
+
+body.dark-mode {
+    --bg-primary: #1a202c;
+    --bg-secondary: #2d3748;
+    --text-primary: #e2e8f0;
+    --text-secondary: #cbd5e0;
+    --text-muted: #a0aec0;
+    --border-color: #4a5568;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.4);
+    --nav-bg-start: #1a202c;
+    --nav-bg-end: #2d3748;
+    --btn-primary-bg: #4299e1;
+    --btn-primary-hover: #3182ce;
+    --btn-success-bg: #48bb78;
+    --btn-success-hover: #38a169;
+    --btn-danger-bg: #fc8181;
+    --btn-danger-hover: #f56565;
+    --btn-warning-bg: #ed8936;
+    --btn-warning-hover: #dd6b20;
+    --btn-secondary-bg: #a0aec0;
+    --btn-secondary-hover: #718096;
+    --card-bg: #2d3748;
+    --chat-outgoing-bg: #4299e1;
+    --chat-incoming-bg: #4a5568;
+    --editor-toolbar-bg: #4a5568;
+    --table-header-bg: #4299e1;
+    --table-stripe: #2d3748;
+}
 
 * {
     box-sizing: border-box;
@@ -9,252 +67,246 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f4f7fc;
-    color: #2c3e50;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* Навигация */
+/* === НАВИГАЦИЯ === */
 nav {
-    background: #2c3e50;
+    background: linear-gradient(135deg, var(--nav-bg-start), var(--nav-bg-end));
     padding: 0.8rem 2rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-nav a {
-    color: #ecf0f1;
+nav a, nav .btn {
+    color: #ffffff;
     text-decoration: none;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: background 0.3s;
+    border-radius: 6px;
     font-weight: 500;
+    transition: background 0.3s, transform 0.2s;
+    background: transparent;
+    border: 1px solid transparent;
 }
 
-nav a:hover {
-    background: #34495e;
+nav a:hover, nav .btn:hover {
+    background: rgba(255,255,255,0.15);
 }
 
 nav .user-info {
-    color: #bdc3c7;
+    color: #e2e8f0;
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
 }
 
-/* Основной контейнер */
-.content {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-/* Карточки */
-.card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-.card h3 {
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-    color: #2c3e50;
-}
-
-/* Виджеты на дашборде */
-.widgets {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-}
-
-.widget {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: 1.2rem;
+.theme-toggle {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
     transition: transform 0.2s;
 }
 
-.widget:hover {
+.theme-toggle:hover {
+    transform: rotate(15deg);
+}
+
+/* === ОСНОВНОЙ КОНТЕЙНЕР === */
+.content {
+    max-width: 1240px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+/* === КАРТОЧКИ === */
+.card, .widget {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+}
+
+.card:hover, .widget:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    box-shadow: var(--shadow-hover);
+}
+
+.card h1, .card h2, .widget h3 {
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .widget h3 {
-    background: #3498db;
-    color: white;
-    margin: -1.2rem -1.2rem 1rem -1.2rem;
-    padding: 0.8rem 1.2rem;
-    border-radius: 8px 8px 0 0;
+    background: linear-gradient(90deg, var(--btn-primary-bg), transparent);
+    color: #fff;
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px 12px 0 0;
     font-size: 1.2rem;
+    border-bottom: none;
 }
 
-/* Кнопки */
+/* === КНОПКИ === */
 .btn {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
-    text-align: center;
-    transition: background 0.3s, transform 0.1s;
+    transition: transform 0.15s, box-shadow 0.2s, background 0.3s;
     margin-right: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
 .btn:active {
-    transform: translateY(1px);
+    transform: scale(0.96);
 }
 
 .btn-primary {
-    background: #3498db;
+    background: var(--btn-primary-bg);
     color: white;
 }
 .btn-primary:hover {
-    background: #2980b9;
+    background: var(--btn-primary-hover);
 }
+
 .btn-success {
-    background: #27ae60;
+    background: var(--btn-success-bg);
     color: white;
 }
 .btn-success:hover {
-    background: #2ecc71;
+    background: var(--btn-success-hover);
 }
+
 .btn-danger {
-    background: #e74c3c;
+    background: var(--btn-danger-bg);
     color: white;
 }
 .btn-danger:hover {
-    background: #c0392b;
+    background: var(--btn-danger-hover);
 }
+
 .btn-warning {
-    background: #f39c12;
+    background: var(--btn-warning-bg);
     color: white;
 }
 .btn-warning:hover {
-    background: #e67e22;
+    background: var(--btn-warning-hover);
 }
+
 .btn-secondary {
-    background: #95a5a6;
+    background: var(--btn-secondary-bg);
     color: white;
 }
 .btn-secondary:hover {
-    background: #7f8c8d;
+    background: var(--btn-secondary-hover);
 }
 
-/* Таблицы */
+/* === ТАБЛИЦЫ === */
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    background: var(--card-bg);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     margin: 1rem 0;
 }
+
 th {
-    background: #3498db;
+    background: var(--table-header-bg);
     color: white;
     font-weight: 500;
-    padding: 0.75rem;
+    padding: 0.8rem;
     text-align: left;
 }
+
 td {
-    padding: 0.75rem;
-    border-bottom: 1px solid #ecf0f1;
-}
-tr:hover {
-    background: #f8f9fa;
+    padding: 0.8rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
-/* Дополнительные стили для таблиц в документах */
+tr:nth-child(even) {
+    background: var(--table-stripe);
+}
+
+tr:hover {
+    background: rgba(0,0,0,0.02);
+}
+
+/* таблицы внутри документов */
 .document-content table {
-    width: auto;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 .document-content th, .document-content td {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     padding: 6px 10px;
 }
-.document-content img {
-    max-width: 100%;
-    height: auto;
-}
-.document-content blockquote {
-    margin: 1em 0;
-    padding-left: 1em;
-    border-left: 4px solid #3498db;
-    color: #555;
-    font-style: italic;
-}
-.document-content hr {
-    border: none;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-}
-.document-content pre {
-    background: #f4f4f4;
-    padding: 0.5rem;
-    border-radius: 4px;
-    overflow-x: auto;
+
+/* === ФОРМЫ === */
+form {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
 }
 
-/* Формы */
-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    max-width: 600px;
-    margin: 2rem auto;
-}
 form div {
     margin-bottom: 1.2rem;
 }
+
 label {
     display: block;
     margin-bottom: 0.3rem;
     font-weight: 500;
-    color: #34495e;
+    color: var(--text-secondary);
 }
+
 input[type="text"],
 input[type="password"],
 textarea,
 select {
     width: 100%;
-    padding: 0.6rem;
-    border: 1px solid #bdc3c7;
-    border-radius: 4px;
+    padding: 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     font-family: inherit;
     font-size: 1rem;
-    transition: border 0.3s;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: border 0.2s, box-shadow 0.2s;
 }
+
 input:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+    border-color: var(--btn-primary-bg);
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
 }
 
-/* Флеш-сообщения */
+/* === ФЛЕШ-СООБЩЕНИЯ === */
 .flashes {
     list-style: none;
     padding: 0;
@@ -262,7 +314,7 @@ select:focus {
 }
 .flashes li {
     padding: 0.75rem 1.2rem;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-bottom: 0.5rem;
     background: #d4edda;
     color: #155724;
@@ -284,70 +336,50 @@ select:focus {
     border-left-color: #17a2b8;
 }
 
-/* Стили для форматированного содержимого документа */
+body.dark-mode .flashes li {
+    opacity: 0.9;
+}
+
+/* === СОДЕРЖИМОЕ ДОКУМЕНТА === */
 .document-content {
     font-family: 'Roboto', sans-serif;
     line-height: 1.5;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border-radius: 8px;
 }
-.document-content ul, .document-content ol {
-    margin-left: 1.5rem;
-    padding-left: 0;
+.document-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
 }
-.document-content p {
-    margin: 0.5rem 0;
-}
-.document-content h1, .document-content h2, .document-content h3,
-.document-content h4, .document-content h5, .document-content h6 {
-    margin: 0.8rem 0 0.5rem;
-}
-.document-content strong, .document-content b {
-    font-weight: bold;
-}
-.document-content em, .document-content i {
+.document-content blockquote {
+    margin: 1em 0;
+    padding-left: 1em;
+    border-left: 4px solid var(--btn-primary-bg);
+    color: var(--text-secondary);
     font-style: italic;
 }
-.document-content u {
-    text-decoration: underline;
-}
-
-/* Прочие улучшения */
-pre {
-    background: #f8f9fa;
+.document-content pre {
+    background: var(--bg-primary);
     padding: 0.5rem;
     border-radius: 4px;
     overflow-x: auto;
-    font-size: 0.9rem;
-}
-h1, h2, h3 {
-    color: #2c3e50;
-    margin-bottom: 1rem;
-}
-h1 {
-    font-size: 2rem;
-    border-bottom: 3px solid #3498db;
-    padding-bottom: 0.5rem;
-}
-hr {
-    border: none;
-    height: 1px;
-    background: #bdc3c7;
-    margin: 1rem 0;
 }
 
-/* ---------- Чат ---------- */
+/* === ЧАТ === */
 .chat-container {
     max-width: 900px;
     margin: 1rem auto;
 }
 
 .chat-messages {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     padding: 1rem;
     height: 400px;
     overflow-y: auto;
-    background: #fafafa;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+    background: var(--bg-primary);
+    border-radius: 8px;
 }
 
 .message {
@@ -366,49 +398,38 @@ hr {
 
 .message-bubble {
     max-width: 70%;
-    padding: 0.5rem 1rem;
+    padding: 0.7rem 1rem;
     border-radius: 18px;
+    transition: background 0.3s;
 }
 
 .outgoing .message-bubble {
-    background: #3498db;
+    background: var(--chat-outgoing-bg);
     color: white;
 }
 
 .incoming .message-bubble {
-    background: #ecf0f1;
-    color: #2c3e50;
-}
-
-.message-bubble strong {
-    font-weight: 600;
-}
-
-.message-bubble small {
-    opacity: 0.7;
-    margin-left: 0.5rem;
-}
-
-.message-bubble .file-attachment {
-    margin-top: 0.5rem;
+    background: var(--chat-incoming-bg);
+    color: var(--text-primary);
 }
 
 .message-bubble .file-attachment a {
     text-decoration: underline;
 }
 
-.outgoing .message-bubble .file-attachment a {
+.outgoing .file-attachment a {
     color: white;
 }
 
-.incoming .message-bubble .file-attachment a {
-    color: #3498db;
+.incoming .file-attachment a {
+    color: var(--btn-primary-bg);
 }
 
 .chat-form {
-    box-shadow: none;
     padding: 0;
-    margin: 0;
+    box-shadow: none;
+    background: none;
+    margin-top: 1rem;
 }
 
 .chat-form-row {
@@ -418,23 +439,100 @@ hr {
 }
 
 .chat-form-row textarea {
-    width: 100%;
     resize: vertical;
 }
 
-.chat-form-row .btn-file-label {
-    margin: 0;
+/* === ПАНЕЛЬ ИНСТРУМЕНТОВ РЕДАКТОРА (ОБНОВЛЁННАЯ) === */
+#editor-toolbar {
+    background: var(--editor-toolbar-bg);
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
 }
 
-.chat-form-row .btn-file-label i {
-    pointer-events: none;
+.toolbar-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.chat-form-row input[type="file"] {
-    display: none;
+.toolbar-group-title {
+    display: block;
+    width: 100%;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
 }
 
-.empty-chat-message {
-    text-align: center;
-    color: #95a5a6;
+.toolbar-group .btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    line-height: 1;
+}
+
+.toolbar-group select,
+.toolbar-group input[type="color"] {
+    padding: 2px 4px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+}
+
+#table-tools {
+    transition: opacity 0.2s;
+}
+
+/* === РЕДАКТОР (WYSIWYG) – область редактирования === */
+#editor {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 400px;
+    overflow-y: auto;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .widgets {
+        grid-template-columns: 1fr;
+    }
+    .chat-form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .toolbar-group-title {
+        display: none;
+    }
+    .toolbar-group {
+        padding: 4px 6px;
+    }
+    .toolbar-group .btn {
+        padding: 4px 6px;
+    }
 }

@@ -9,32 +9,35 @@
 </head>
 <body>
     <nav>
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary"><i class="fas fa-tachometer-alt"></i> Главная</a>
-            <a href="{{ url_for('workflows_list') }}" class="btn btn-secondary"><i class="fas fa-project-diagram"></i> Шаблоны</a>
-            <a href="{{ url_for('chat_list') }}" class="btn btn-secondary">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+            <a href="{{ url_for('dashboard') }}"><i class="fas fa-tachometer-alt"></i> Главная</a>
+            <a href="{{ url_for('workflows_list') }}"><i class="fas fa-project-diagram"></i> Шаблоны</a>
+            <a href="{{ url_for('chat_list') }}">
                 <i class="fas fa-comments"></i> Чат
                 {% if unread_messages > 0 %}
-                    <span style="background: #e74c3c; color: white; border-radius: 50%; padding: 0.1rem 0.4rem; font-size: 0.8rem; margin-left: 5px;">{{ unread_messages }}</span>
+                    <span style="background: #e53e3e; color: white; border-radius: 50%; padding: 0.1rem 0.4rem; font-size: 0.8rem; margin-left: 5px;">{{ unread_messages }}</span>
                 {% endif %}
             </a>
-            <a href="{{ url_for('audit_view') }}" class="btn btn-secondary"><i class="fas fa-history"></i> Аудит</a>
-            <a href="{{ url_for('backup_page') }}" class="btn btn-secondary"><i class="fas fa-database"></i> Бэкап</a>
-            <a href="{{ url_for('policy') }}" class="btn btn-secondary"><i class="fas fa-shield-alt"></i> Политика</a>
-            <a href="{{ url_for('test_page') }}" class="btn btn-secondary"><i class="fas fa-vial"></i> Тесты</a>
+            <a href="{{ url_for('audit_view') }}"><i class="fas fa-history"></i> Аудит</a>
+            <a href="{{ url_for('backup_page') }}"><i class="fas fa-database"></i> Бэкап</a>
+            <a href="{{ url_for('policy') }}"><i class="fas fa-shield-alt"></i> Политика</a>
+            <a href="{{ url_for('test_page') }}"><i class="fas fa-vial"></i> Тесты</a>
             {% if current_user and current_user.role in ['admin', 'manager'] %}
-                <a href="{{ url_for('upload_file') }}" class="btn btn-success"><i class="fas fa-upload"></i> Загрузить файл</a>
+                <a href="{{ url_for('upload_file') }}"><i class="fas fa-upload"></i> Загрузить файл</a>
             {% endif %}
         </div>
         <div class="user-info">
             {% if current_user %}
-                <span style="color: #ecf0f1; margin-right: 1rem;">
+                <span>
                     <i class="fas fa-user-circle"></i> {{ current_user.full_name or current_user.username }}
-                    <span style="background: #3498db; padding: 0.2rem 0.5rem; border-radius: 4px; margin-left: 0.5rem;">{{ current_user.role }}</span>
+                    <span style="background: rgba(255,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 4px; margin-left: 0.5rem;">{{ current_user.role }}</span>
                 </span>
-                <a href="{{ url_for('logout') }}" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Выход</a>
+                <button id="themeToggle" class="theme-toggle" title="Переключить тему">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Выход</a>
             {% else %}
-                <a href="{{ url_for('login') }}" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Вход</a>
+                <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Вход</a>
             {% endif %}
         </div>
     </nav>
@@ -52,5 +55,33 @@
 
         {% block content %}{% endblock %}
     </div>
+
+    <script>
+        (function() {
+            const body = document.body;
+            const toggleBtn = document.getElementById('themeToggle');
+            const icon = toggleBtn.querySelector('i');
+
+            // Проверяем сохранённую тему
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                if (body.classList.contains('dark-mode')) {
+                    icon.className = 'fas fa-sun';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    icon.className = 'fas fa-moon';
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

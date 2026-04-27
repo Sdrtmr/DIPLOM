@@ -18,7 +18,7 @@
             <div id="steps-container">
                 {% if template and template.steps %}
                     {% for step in template.steps %}
-                        <div class="step-item" style="margin-bottom: 1rem; border: 1px solid #ccc; padding: 0.5rem; border-radius: 4px;">
+                        <div class="step-item" style="margin-bottom: 1rem; border: 1px solid var(--border-color); padding: 0.5rem; border-radius: 4px;">
                             <input type="text" name="step_name_{{ loop.index0 }}" value="{{ step.name }}" placeholder="Название шага" style="width: 100%; margin-bottom: 0.5rem;">
                             <input type="text" name="step_role_{{ loop.index0 }}" value="{{ step.role }}" placeholder="Роль (manager, lawyer, admin)" style="width: 100%; margin-bottom: 0.5rem;">
                             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -30,12 +30,12 @@
                                     <label>Можно вернуть:</label>
                                     <input type="checkbox" name="step_can_return_{{ loop.index0 }}" {% if step.can_return %}checked{% endif %}>
                                 </div>
-                                <button type="button" onclick="removeStep(this)" class="btn btn-danger" style="margin-left: auto;">Удалить</button>
+                                <button type="button" onclick="removeStep(this)" class="btn btn-danger" style="margin-left: auto;"><i class="fas fa-trash"></i> Удалить</button>
                             </div>
                         </div>
                     {% endfor %}
                 {% else %}
-                    <div class="step-item" style="margin-bottom: 1rem; border: 1px solid #ccc; padding: 0.5rem; border-radius: 4px;">
+                    <div class="step-item" style="margin-bottom: 1rem; border: 1px solid var(--border-color); padding: 0.5rem; border-radius: 4px;">
                         <input type="text" name="step_name_0" placeholder="Название шага" style="width: 100%; margin-bottom: 0.5rem;">
                         <input type="text" name="step_role_0" placeholder="Роль (manager, lawyer, admin)" style="width: 100%; margin-bottom: 0.5rem;">
                         <div style="display: flex; gap: 1rem; align-items: center;">
@@ -51,10 +51,10 @@
                     </div>
                 {% endif %}
             </div>
-            <button type="button" onclick="addStep()" class="btn btn-secondary">+ Добавить шаг</button>
+            <button type="button" onclick="addStep()" class="btn btn-secondary"><i class="fas fa-plus"></i> Добавить шаг</button>
         </div>
-        <button type="submit" class="btn btn-success">Сохранить</button>
-        <a href="{{ url_for('workflows_list') }}" class="btn btn-danger">Отмена</a>
+        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Сохранить</button>
+        <a href="{{ url_for('workflows_list') }}" class="btn btn-danger"><i class="fas fa-times"></i> Отмена</a>
     </form>
 </div>
 
@@ -74,7 +74,9 @@
             </select>
         </div>
         <div>
-            <button type="submit" class="btn btn-primary" onclick="return confirm('Запустить процесс согласования для выбранного документа?')">Запустить процесс</button>
+            <button type="submit" class="btn btn-primary" onclick="return confirm('Запустить процесс согласования для выбранного документа?')">
+                <i class="fas fa-play"></i> Запустить процесс
+            </button>
         </div>
     </form>
 
@@ -84,7 +86,9 @@
             <input type="file" name="file" id="file" accept=".txt,.docx" required>
         </div>
         <div>
-            <button type="submit" class="btn btn-primary" onclick="return confirm('Файл будет загружен и процесс запущен автоматически.')">Загрузить и запустить процесс</button>
+            <button type="submit" class="btn btn-primary" onclick="return confirm('Файл будет загружен и процесс запущен автоматически.')">
+                <i class="fas fa-upload"></i> Загрузить и запустить процесс
+            </button>
         </div>
     </form>
 </div>
@@ -92,12 +96,16 @@
 <div class="card" style="margin-top: 2rem;">
     <h2>Управление активными процессами</h2>
     <p>Действия применяются ко всем активным процессам, созданным по этому шаблону.</p>
-    <div style="display: flex; gap: 1rem;">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
         <form action="{{ url_for('complete_all_workflows', template_id=template.id) }}" method="post" style="display: inline;">
-            <button type="submit" class="btn btn-success" onclick="return confirm('Завершить все активные процессы по этому шаблону?')">Завершить все активные процессы</button>
+            <button type="submit" class="btn btn-success" onclick="return confirm('Завершить все активные процессы по этому шаблону?')">
+                <i class="fas fa-check-double"></i> Завершить все активные процессы
+            </button>
         </form>
         <form action="{{ url_for('reject_all_workflows', template_id=template.id) }}" method="post" style="display: inline;">
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Отклонить все активные процессы по этому шаблону?')">Отклонить все активные процессы</button>
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Отклонить все активные процессы по этому шаблону?')">
+                <i class="fas fa-times-circle"></i> Отклонить все активные процессы
+            </button>
         </form>
     </div>
 </div>
@@ -122,7 +130,7 @@
         const newIdx = maxIdx + 1;
         const newStep = document.createElement('div');
         newStep.className = 'step-item';
-        newStep.style = 'margin-bottom: 1rem; border: 1px solid #ccc; padding: 0.5rem; border-radius: 4px;';
+        newStep.style = 'margin-bottom: 1rem; border: 1px solid var(--border-color); padding: 0.5rem; border-radius: 4px;';
         newStep.innerHTML = `
             <input type="text" name="step_name_${newIdx}" placeholder="Название шага" style="width: 100%; margin-bottom: 0.5rem;">
             <input type="text" name="step_role_${newIdx}" placeholder="Роль (manager, lawyer, admin)" style="width: 100%; margin-bottom: 0.5rem;">
@@ -135,7 +143,7 @@
                     <label>Можно вернуть:</label>
                     <input type="checkbox" name="step_can_return_${newIdx}">
                 </div>
-                <button type="button" onclick="removeStep(this)" class="btn btn-danger" style="margin-left: auto;">Удалить</button>
+                <button type="button" onclick="removeStep(this)" class="btn btn-danger" style="margin-left: auto;"><i class="fas fa-trash"></i> Удалить</button>
             </div>
         `;
         container.appendChild(newStep);

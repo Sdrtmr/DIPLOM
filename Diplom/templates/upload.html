@@ -11,11 +11,11 @@
         </div>
         <div>
             <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Загрузить и обработать</button>
-            <a href="{{ url_for('dashboard') }}" class="btn btn-danger">Отмена</a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-danger"><i class="fas fa-times"></i> Отмена</a>
         </div>
     </form>
 
-    <p style="margin-top: 1rem; color: #7f8c8d;">
+    <p style="margin-top: 1rem; color: var(--text-secondary);">
         Максимальный размер файла: <strong>50 МБ</strong>.<br>
         Поддерживаются форматы: <strong>.txt</strong> (простой текст), <strong>.docx</strong> (Microsoft Word) и <strong>.xlsx</strong> (Microsoft Excel).<br>
         Из .docx извлекается текст всех абзацев (без сложного форматирования).<br>

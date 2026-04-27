@@ -7,93 +7,108 @@
     <form method="post" id="editForm" style="box-shadow: none; padding: 0;">
         <input type="hidden" name="content" id="contentHidden">
 
-        <!-- Панель инструментов -->
-        <div id="editor-toolbar" style="margin-bottom: 10px; padding: 8px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-            <!-- Форматирование текста -->
-            <button type="button" onclick="format('bold')" class="btn btn-secondary" title="Жирный"><i class="fas fa-bold"></i></button>
-            <button type="button" onclick="format('italic')" class="btn btn-secondary" title="Курсив"><i class="fas fa-italic"></i></button>
-            <button type="button" onclick="format('underline')" class="btn btn-secondary" title="Подчёркнутый"><i class="fas fa-underline"></i></button>
-            <button type="button" onclick="format('strikeThrough')" class="btn btn-secondary" title="Зачёркнутый"><i class="fas fa-strikethrough"></i></button>
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+        <!-- Панель инструментов (обновлённая структурированная версия) -->
+        <div id="editor-toolbar">
+            <!-- Группа: Формат текста -->
+            <div class="toolbar-group">
+                <span class="toolbar-group-title">Текст</span>
+                <button type="button" onclick="format('bold')" title="Жирный (Ctrl+B)"><i class="fas fa-bold"></i></button>
+                <button type="button" onclick="format('italic')" title="Курсив (Ctrl+I)"><i class="fas fa-italic"></i></button>
+                <button type="button" onclick="format('underline')" title="Подчёркнутый (Ctrl+U)"><i class="fas fa-underline"></i></button>
+                <button type="button" onclick="format('strikeThrough')" title="Зачёркнутый"><i class="fas fa-strikethrough"></i></button>
+                <button type="button" onclick="clearFormat()" title="Очистить формат"><i class="fas fa-eraser"></i></button>
+            </div>
 
-            <!-- Заголовки (выпадающий список) -->
-            <select id="headingSelect" onchange="applyHeading(this.value)" style="width: 100px;">
-                <option value="">Обычный</option>
-                <option value="H1">Заголовок 1</option>
-                <option value="H2">Заголовок 2</option>
-                <option value="H3">Заголовок 3</option>
-                <option value="H4">Заголовок 4</option>
-                <option value="H5">Заголовок 5</option>
-                <option value="H6">Заголовок 6</option>
-            </select>
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+            <!-- Группа: Абзац и заголовки -->
+            <div class="toolbar-group">
+                <span class="toolbar-group-title">Абзац</span>
+                <select onchange="applyHeading(this.value)" title="Стиль абзаца">
+                    <option value="">Обычный</option>
+                    <option value="H1">Заголовок 1</option>
+                    <option value="H2">Заголовок 2</option>
+                    <option value="H3">Заголовок 3</option>
+                    <option value="H4">Заголовок 4</option>
+                    <option value="H5">Заголовок 5</option>
+                    <option value="H6">Заголовок 6</option>
+                </select>
+                <button type="button" onclick="format('insertUnorderedList')" title="Маркированный список"><i class="fas fa-list-ul"></i></button>
+                <button type="button" onclick="format('insertOrderedList')" title="Нумерованный список"><i class="fas fa-list-ol"></i></button>
+                <button type="button" onclick="format('indent')" title="Увеличить отступ"><i class="fas fa-indent"></i></button>
+                <button type="button" onclick="format('outdent')" title="Уменьшить отступ"><i class="fas fa-outdent"></i></button>
+                <button type="button" onclick="insertBlockquote()" title="Цитата"><i class="fas fa-quote-right"></i></button>
+            </div>
 
-            <!-- Списки -->
-            <button type="button" onclick="format('insertUnorderedList')" class="btn btn-secondary" title="Маркированный список"><i class="fas fa-list-ul"></i></button>
-            <button type="button" onclick="format('insertOrderedList')" class="btn btn-secondary" title="Нумерованный список"><i class="fas fa-list-ol"></i></button>
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+            <!-- Группа: Выравнивание -->
+            <div class="toolbar-group">
+                <span class="toolbar-group-title">Выравнивание</span>
+                <button type="button" onclick="format('justifyLeft')" title="По левому краю"><i class="fas fa-align-left"></i></button>
+                <button type="button" onclick="format('justifyCenter')" title="По центру"><i class="fas fa-align-center"></i></button>
+                <button type="button" onclick="format('justifyRight')" title="По правому краю"><i class="fas fa-align-right"></i></button>
+                <button type="button" onclick="format('justifyFull')" title="По ширине"><i class="fas fa-align-justify"></i></button>
+            </div>
 
-            <!-- Выравнивание -->
-            <button type="button" onclick="format('justifyLeft')" class="btn btn-secondary" title="Выровнять влево"><i class="fas fa-align-left"></i></button>
-            <button type="button" onclick="format('justifyCenter')" class="btn btn-secondary" title="Выровнять по центру"><i class="fas fa-align-center"></i></button>
-            <button type="button" onclick="format('justifyRight')" class="btn btn-secondary" title="Выровнять вправо"><i class="fas fa-align-right"></i></button>
-            <button type="button" onclick="format('justifyFull')" class="btn btn-secondary" title="Выровнять по ширине"><i class="fas fa-align-justify"></i></button>
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+            <!-- Группа: Шрифт и цвет -->
+            <div class="toolbar-group">
+                <span class="toolbar-group-title">Шрифт</span>
+                <select onchange="format('fontName', this.value)" title="Шрифт">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                </select>
+                <select onchange="format('fontSize', this.value)" title="Размер шрифта">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select>
+                <input type="color" onchange="format('foreColor', this.value)" title="Цвет текста">
+                <input type="color" onchange="format('backColor', this.value)" title="Цвет фона текста">
+            </div>
 
-            <!-- Отступы -->
-            <button type="button" onclick="format('indent')" class="btn btn-secondary" title="Увеличить отступ"><i class="fas fa-indent"></i></button>
-            <button type="button" onclick="format('outdent')" class="btn btn-secondary" title="Уменьшить отступ"><i class="fas fa-outdent"></i></button>
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+            <!-- Группа: Вставка -->
+            <div class="toolbar-group">
+                <span class="toolbar-group-title">Вставка</span>
+                <button type="button" onclick="insertImage()" title="Изображение"><i class="fas fa-image"></i></button>
+                <button type="button" onclick="insertTableDialog()" title="Таблица"><i class="fas fa-table"></i></button>
+                <button type="button" onclick="insertHorizontalRule()" title="Горизонтальная линия"><i class="fas fa-minus"></i></button>
+                <button type="button" onclick="insertSpecialChar()" title="Специальный символ"><i class="fas fa-smile"></i></button>
+            </div>
 
-            <!-- Шрифт, размер, цвет -->
-            <select id="fontSelect" onchange="format('fontName', this.value)" style="width: 110px;">
-                <option value="Arial">Arial</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Verdana">Verdana</option>
-            </select>
-            <select id="fontSizeSelect" onchange="format('fontSize', this.value)" style="width: 70px;">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3" selected>3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-            </select>
-            <input type="color" id="textColor" onchange="format('foreColor', this.value)" title="Цвет текста">
-            <input type="color" id="bgColor" onchange="format('backColor', this.value)" title="Цвет фона">
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+            <!-- Группа: Работа с таблицей (показывается, только если курсор внутри таблицы) -->
+            <div class="toolbar-group" id="table-tools" style="display: none;">
+                <span class="toolbar-group-title">Таблица</span>
+                <button type="button" onclick="tableAddRow()" title="Добавить строку ниже"><i class="fas fa-plus"></i> Строка</button>
+                <button type="button" onclick="tableDeleteRow()" title="Удалить строку"><i class="fas fa-trash-alt"></i></button>
+                <button type="button" onclick="tableAddColumn()" title="Добавить столбец справа"><i class="fas fa-plus"></i> Столбец</button>
+                <button type="button" onclick="tableDeleteColumn()" title="Удалить столбец"><i class="fas fa-trash-alt"></i></button>
+                <button type="button" onclick="tableMergeCells()" title="Объединить выделенные ячейки"><i class="fas fa-object-group"></i></button>
+                <button type="button" onclick="tableSplitCell()" title="Разделить ячейку"><i class="fas fa-object-ungroup"></i></button>
+                <button type="button" onclick="tableCellBgColor()" title="Цвет заливки ячейки"><i class="fas fa-fill-drip"></i></button>
+            </div>
 
-            <!-- Вставка элементов -->
-            <button type="button" onclick="insertImage()" class="btn btn-secondary" title="Вставить изображение"><i class="fas fa-image"></i></button>
-            <button type="button" onclick="insertTable()" class="btn btn-secondary" title="Вставить таблицу"><i class="fas fa-table"></i></button>
-            <button type="button" onclick="insertBlockquote()" class="btn btn-secondary" title="Цитата"><i class="fas fa-quote-right"></i></button>
-            <button type="button" onclick="insertHorizontalRule()" class="btn btn-secondary" title="Горизонтальная линия"><i class="fas fa-minus"></i></button>
-            <button type="button" onclick="insertSpecialChar()" class="btn btn-secondary" title="Специальный символ"><i class="fas fa-smile"></i></button>
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+            <!-- Группа: Ссылки -->
+            <div class="toolbar-group">
+                <span class="toolbar-group-title">Ссылки</span>
+                <button type="button" onclick="createLink()" title="Вставить ссылку"><i class="fas fa-link"></i></button>
+                <button type="button" onclick="format('unlink')" title="Удалить ссылку"><i class="fas fa-unlink"></i></button>
+            </div>
 
-            <!-- Ссылки -->
-            <button type="button" onclick="createLink()" class="btn btn-secondary" title="Вставить ссылку"><i class="fas fa-link"></i></button>
-            <button type="button" onclick="format('unlink')" class="btn btn-secondary" title="Удалить ссылку"><i class="fas fa-unlink"></i></button>
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
-
-            <!-- Отмена/Повтор -->
-            <button type="button" onclick="format('undo')" class="btn btn-secondary" title="Отменить"><i class="fas fa-undo-alt"></i></button>
-            <button type="button" onclick="format('redo')" class="btn btn-secondary" title="Повторить"><i class="fas fa-redo-alt"></i></button>
-            <span class="separator" style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
-
-            <!-- Очистка форматирования и HTML-код -->
-            <button type="button" onclick="clearFormat()" class="btn btn-secondary" title="Очистить формат"><i class="fas fa-eraser"></i></button>
-            <button type="button" onclick="toggleSource()" class="btn btn-secondary" title="Показать/скрыть HTML-код"><i class="fas fa-code"></i></button>
+            <!-- Группа: Отмена/Повтор -->
+            <div class="toolbar-group">
+                <span class="toolbar-group-title">Действия</span>
+                <button type="button" onclick="format('undo')" title="Отменить (Ctrl+Z)"><i class="fas fa-undo-alt"></i></button>
+                <button type="button" onclick="format('redo')" title="Повторить (Ctrl+Y)"><i class="fas fa-redo-alt"></i></button>
+                <button type="button" onclick="toggleSource()" title="Показать HTML-код"><i class="fas fa-code"></i></button>
+            </div>
         </div>
 
         <!-- Редактируемая область -->
-        <div id="editor" contenteditable="true"
-             style="border: 1px solid #ccc; padding: 10px; min-height: 400px; overflow-y: auto; background: white; font-family: Arial; font-size: 14px;">
-            {{ document.content|safe }}
-        </div>
+        <div id="editor" contenteditable="true">{{ document.content|safe }}</div>
 
         <div style="margin-top: 1rem;">
             <button type="submit" class="btn btn-success" onclick="prepareSubmit()"><i class="fas fa-save"></i> Сохранить изменения</button>
@@ -104,11 +119,7 @@
 
 <script>
     function format(command, value = null) {
-        if (value) {
-            document.execCommand(command, false, value);
-        } else {
-            document.execCommand(command, false, null);
-        }
+        document.execCommand(command, false, value);
         document.getElementById('editor').focus();
     }
 
@@ -142,24 +153,6 @@
         document.getElementById('editor').focus();
     }
 
-    function insertTable() {
-        let rows = prompt('Количество строк:', '3');
-        let cols = prompt('Количество столбцов:', '3');
-        if (rows && cols) {
-            let tableHtml = '<table border="1" cellpadding="5" cellspacing="0">';
-            for (let i = 0; i < rows; i++) {
-                tableHtml += '<tr>';
-                for (let j = 0; j < cols; j++) {
-                    tableHtml += '<td>&nbsp;</td>';
-                }
-                tableHtml += '</tr>';
-            }
-            tableHtml += '</table><br>';
-            document.execCommand('insertHTML', false, tableHtml);
-        }
-        document.getElementById('editor').focus();
-    }
-
     function insertBlockquote() {
         document.execCommand('formatBlock', false, 'blockquote');
         document.getElementById('editor').focus();
@@ -178,8 +171,161 @@
         document.getElementById('editor').focus();
     }
 
+    // ---------- Новые функции для таблиц ----------
+
+    function getCurrentTable() {
+        const sel = window.getSelection();
+        if (sel.rangeCount) {
+            let node = sel.anchorNode;
+            return node.closest ? node.closest('table') : (node.parentElement ? node.parentElement.closest('table') : null);
+        }
+        return null;
+    }
+
+    function showTableTools() {
+        const table = getCurrentTable();
+        const tools = document.getElementById('table-tools');
+        if (tools) tools.style.display = table ? 'flex' : 'none';
+    }
+
+    document.getElementById('editor').addEventListener('click', function(e) {
+        showTableTools();
+    });
+    document.addEventListener('selectionchange', showTableTools);
+
+    function tableAddRow() {
+        const table = getCurrentTable();
+        if (!table) return alert('Поместите курсор в таблицу');
+        let targetRow = null;
+        const sel = window.getSelection();
+        if (sel.anchorNode) {
+            const td = sel.anchorNode.closest ? sel.anchorNode.closest('td,th') : (sel.anchorNode.parentElement ? sel.anchorNode.parentElement.closest('td,th') : null);
+            if (td) targetRow = td.parentElement;
+        }
+        if (!targetRow) targetRow = table.rows[table.rows.length - 1];
+        const newRow = table.insertRow(targetRow.rowIndex + 1);
+        const cols = targetRow.cells.length;
+        for (let i = 0; i < cols; i++) {
+            newRow.insertCell(-1).innerHTML = '&nbsp;';
+        }
+    }
+
+    function tableDeleteRow() {
+        const table = getCurrentTable();
+        if (!table) return;
+        const sel = window.getSelection();
+        if (sel.anchorNode) {
+            const td = sel.anchorNode.closest ? sel.anchorNode.closest('td,th') : (sel.anchorNode.parentElement ? sel.anchorNode.parentElement.closest('td,th') : null);
+            if (td && table.rows.length > 1) {
+                td.parentElement.remove();
+            }
+        }
+    }
+
+    function tableAddColumn() {
+        const table = getCurrentTable();
+        if (!table) return;
+        const sel = window.getSelection();
+        let colIndex = 0;
+        if (sel.anchorNode) {
+            const td = sel.anchorNode.closest ? sel.anchorNode.closest('td,th') : (sel.anchorNode.parentElement ? sel.anchorNode.parentElement.closest('td,th') : null);
+            if (td) colIndex = td.cellIndex;
+        }
+        for (let i = 0; i < table.rows.length; i++) {
+            const newCell = table.rows[i].insertCell(colIndex + 1);
+            newCell.innerHTML = i === 0 ? '<strong>Новая</strong>' : '&nbsp;';
+        }
+    }
+
+    function tableDeleteColumn() {
+        const table = getCurrentTable();
+        if (!table) return;
+        const sel = window.getSelection();
+        if (sel.anchorNode) {
+            const td = sel.anchorNode.closest ? sel.anchorNode.closest('td,th') : (sel.anchorNode.parentElement ? sel.anchorNode.parentElement.closest('td,th') : null);
+            if (td && table.rows[0].cells.length > 1) {
+                const col = td.cellIndex;
+                for (let i = 0; i < table.rows.length; i++) {
+                    table.rows[i].deleteCell(col);
+                }
+            }
+        }
+    }
+
+    function tableMergeCells() {
+        const range = window.getSelection().getRangeAt(0);
+        const cells = getSelectedCells(range);
+        if (cells.length < 2) {
+            alert('Выделите хотя бы две соседние ячейки');
+            return;
+        }
+        const firstCell = cells[0];
+        const rowSpan = cells[cells.length - 1].parentElement.rowIndex - firstCell.parentElement.rowIndex + 1;
+        const colSpan = cells[cells.length - 1].cellIndex - firstCell.cellIndex + 1;
+        firstCell.setAttribute('rowspan', rowSpan);
+        firstCell.setAttribute('colspan', colSpan);
+        firstCell.innerHTML = cells.map(c => c.innerHTML).join('<br>');
+        cells.slice(1).forEach(c => c.remove());
+    }
+
+    function getSelectedCells(range) {
+        const cells = [];
+        const startNode = range.startContainer;
+        const table = startNode.closest ? startNode.closest('table') : startNode.parentElement.closest('table');
+        if (!table) return [];
+        const allCells = table.querySelectorAll('td, th');
+        allCells.forEach(cell => {
+            if (range.intersectsNode(cell)) cells.push(cell);
+        });
+        return cells;
+    }
+
+    function tableSplitCell() {
+        const sel = window.getSelection();
+        if (sel.anchorNode) {
+            const td = sel.anchorNode.closest ? sel.anchorNode.closest('td,th') : (sel.anchorNode.parentElement ? sel.anchorNode.parentElement.closest('td,th') : null);
+            if (td && (td.getAttribute('rowspan') || td.getAttribute('colspan'))) {
+                td.removeAttribute('rowspan');
+                td.removeAttribute('colspan');
+            }
+        }
+    }
+
+    function tableCellBgColor() {
+        const sel = window.getSelection();
+        if (sel.anchorNode) {
+            const td = sel.anchorNode.closest ? sel.anchorNode.closest('td,th') : (sel.anchorNode.parentElement ? sel.anchorNode.parentElement.closest('td,th') : null);
+            if (td) {
+                const color = prompt('Введите цвет (hex или название):', '#f0f0f0');
+                if (color) td.style.backgroundColor = color;
+            }
+        }
+    }
+
+    function insertTableDialog() {
+        let rows = prompt('Количество строк:', '3');
+        let cols = prompt('Количество столбцов:', '3');
+        if (rows && cols) {
+            rows = parseInt(rows) || 3;
+            cols = parseInt(cols) || 3;
+            let tableHtml = '<table border="1" cellpadding="5" cellspacing="0">';
+            for (let i = 0; i < rows; i++) {
+                tableHtml += '<tr>';
+                for (let j = 0; j < cols; j++) {
+                    tableHtml += '<td>&nbsp;</td>';
+                }
+                tableHtml += '</tr>';
+            }
+            tableHtml += '</table><br>';
+            document.execCommand('insertHTML', false, tableHtml);
+        }
+        document.getElementById('editor').focus();
+    }
+
+    // ---------- Режим исходного кода (без изменений) ----------
     let sourceMode = false;
     let originalContent = '';
+
     function toggleSource() {
         const editor = document.getElementById('editor');
         if (!sourceMode) {
@@ -189,6 +335,8 @@
             textarea.style.width = '100%';
             textarea.style.height = '400px';
             textarea.style.fontFamily = 'monospace';
+            textarea.style.background = 'var(--bg-primary)';
+            textarea.style.color = 'var(--text-primary)';
             textarea.value = originalContent;
             editor.parentNode.replaceChild(textarea, editor);
             sourceMode = true;
@@ -198,7 +346,7 @@
             const newDiv = document.createElement('div');
             newDiv.id = 'editor';
             newDiv.contentEditable = 'true';
-            newDiv.style = 'border: 1px solid #ccc; padding: 10px; min-height: 400px; overflow-y: auto; background: white; font-family: Arial; font-size: 14px;';
+            newDiv.classList.add('editor-area');
             newDiv.innerHTML = newHtml;
             textarea.parentNode.replaceChild(newDiv, textarea);
             sourceMode = false;
@@ -217,7 +365,6 @@
         return true;
     }
 
-    // Обработка Enter (создание нового абзаца)
     document.addEventListener('keydown', function(e) {
         if (e.target.id === 'editor' && e.key === 'Enter') {
             document.execCommand('insertParagraph', false, null);

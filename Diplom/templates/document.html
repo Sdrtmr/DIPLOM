@@ -4,7 +4,9 @@
 <div class="card">
     <h1>Документ: {{ document.title }}</h1>
     {% if current_user and current_user.role in ['admin', 'manager'] %}
-        <a href="{{ url_for('edit_document', doc_id=document.id) }}" class="btn btn-warning" style="float: right; margin-top: -2.5rem;">Редактировать</a>
+        <a href="{{ url_for('edit_document', doc_id=document.id) }}" class="btn btn-warning" style="float: right; margin-top: -2.5rem;">
+            <i class="fas fa-edit"></i> Редактировать
+        </a>
     {% endif %}
 
     <p><strong>Источник:</strong> {{ document.source_system or 'локальный' }} (ID: {{ document.external_id or '—' }})</p>
@@ -65,10 +67,14 @@
         {% if workflow.status == 'active' and current_user and current_user.role in ['admin', 'manager'] %}
             <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                 <form action="{{ url_for('complete_process', process_id=workflow.id) }}" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-success" onclick="return confirm('Завершить процесс согласования? Документ будет считаться согласованным.')">Завершить процесс</button>
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Завершить процесс согласования? Документ будет считаться согласованным.')">
+                        <i class="fas fa-check-circle"></i> Завершить процесс
+                    </button>
                 </form>
                 <form action="{{ url_for('reject_process', process_id=workflow.id) }}" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Отклонить процесс? Документ будет отклонён.')">Отклонить процесс</button>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Отклонить процесс? Документ будет отклонён.')">
+                        <i class="fas fa-times-circle"></i> Отклонить процесс
+                    </button>
                 </form>
             </div>
         {% endif %}
@@ -82,7 +88,7 @@
                             <option value="{{ tmpl.id }}">{{ tmpl.name }}</option>
                         {% endfor %}
                     </select>
-                    <button type="submit" class="btn btn-success">Запустить процесс</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-play"></i> Запустить процесс</button>
                 </div>
             </form>
         {% else %}

@@ -4,7 +4,7 @@
 <div class="card">
     <h1>Задача на согласование</h1>
 
-    <p><strong>Документ:</strong> <a href="{{ url_for('document_view', doc_id=document.id) }}" class="btn btn-primary">{{ document.title }}</a></p>
+    <p><strong>Документ:</strong> <a href="{{ url_for('document_view', doc_id=document.id) }}" class="btn btn-primary"><i class="fas fa-file-alt"></i> {{ document.title }}</a></p>
     <p><strong>Шаблон:</strong> {{ workflow.template_name }}</p>
     <p><strong>Шаг:</strong> {{ task.step_index + 1 }} из {{ steps_detail|length }} ({{ steps_detail[task.step_index].name }})</p>
     <p><strong>Роль исполнителя:</strong> {{ task.assigned_role }}</p>
@@ -24,16 +24,22 @@
                 <textarea name="comments" id="comments" rows="4" placeholder="Ваш комментарий..."></textarea>
             </div>
             <div style="display: flex; gap: 0.5rem;">
-                <button type="submit" name="action" value="approve" class="btn btn-success">Утвердить</button>
+                <button type="submit" name="action" value="approve" class="btn btn-success">
+                    <i class="fas fa-check"></i> Утвердить
+                </button>
                 {% if task.can_return %}
-                    <button type="submit" name="action" value="return" class="btn btn-warning" onclick="return confirm('Вернуть задачу на доработку?')">Вернуть на доработку</button>
+                    <button type="submit" name="action" value="return" class="btn btn-warning" onclick="return confirm('Вернуть задачу на доработку?')">
+                        <i class="fas fa-undo-alt"></i> Вернуть на доработку
+                    </button>
                 {% endif %}
-                <button type="submit" name="action" value="reject" class="btn btn-danger">Отклонить</button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger">
+                    <i class="fas fa-times"></i> Отклонить
+                </button>
             </div>
         </form>
     {% else %}
         <p><strong>Комментарий:</strong> {{ task.comments or 'нет' }}</p>
-        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Вернуться к дашборду</a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Вернуться к дашборду</a>
     {% endif %}
 </div>
 {% endblock %}
