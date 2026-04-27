@@ -6,8 +6,8 @@
 
     <form method="post" enctype="multipart/form-data" style="box-shadow: none; padding: 0;">
         <div>
-            <label for="file">Выберите файл (.txt или .docx):</label>
-            <input type="file" id="file" name="file" accept=".txt,.docx" required>
+            <label for="file">Выберите файл (.txt, .docx или .xlsx):</label>
+            <input type="file" id="file" name="file" accept=".txt,.docx,.xlsx" required>
         </div>
         <div>
             <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Загрузить и обработать</button>
@@ -17,8 +17,9 @@
 
     <p style="margin-top: 1rem; color: #7f8c8d;">
         Максимальный размер файла: <strong>50 МБ</strong>.<br>
-        Поддерживаются форматы: <strong>.txt</strong> (простой текст) и <strong>.docx</strong> (Microsoft Word).<br>
-        Из .docx извлекается текст всех абзацев (без сложного форматирования).
+        Поддерживаются форматы: <strong>.txt</strong> (простой текст), <strong>.docx</strong> (Microsoft Word) и <strong>.xlsx</strong> (Microsoft Excel).<br>
+        Из .docx извлекается текст всех абзацев (без сложного форматирования).<br>
+        Из .xlsx данные преобразуются в HTML-таблицу (первая строка считается заголовком).
     </p>
 </div>
 {% endblock %}
